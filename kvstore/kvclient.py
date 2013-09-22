@@ -14,6 +14,7 @@ def create_connection():
 
 def send_command(clientsocket, command):
     send_all(clientsocket, command)
+    clientsocket.shutdown(socket.SHUT_WR)
 
 
 def receive_answer(clientsocket):
@@ -31,7 +32,6 @@ class StoreCommand(object):
         command = ' '.join(('store', self.key, self.value))
         send_command(clientsocket, command)
         logging.info('command was sent')
-        clientsocket.shutdown(socket.SHUT_RDWR)
         clientsocket.close()
         return True
 
@@ -46,11 +46,9 @@ class GetCommand(object):
         command = ' '.join(('get', self.key))
         send_command(clientsocket, command)
         logging.info('command was sent')
-        clientsocket.shutdown(socket.SHUT_WR)
 
         value = receive_answer(clientsocket)
         logging.info('answer: {}'.format(value))
-        clientsocket.shutdown(socket.SHUT_RD)
         clientsocket.close()
         print 'value: {}'.format(value)
         return True

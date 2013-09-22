@@ -41,6 +41,7 @@ def write_answer(clientsocket, answer):
     logging.info('answer: {}'.format(answer))
     send_all(clientsocket, answer)
     logging.info('answer was sent')
+    clientsocket.shutdown(socket.SHUT_WR)
 
 
 def receive_command(clientsocket):
@@ -53,7 +54,6 @@ def process_client(clientsocket, storage):
     logging.info('new client')
     command = receive_command(clientsocket)
     command.run(storage, clientsocket)
-    clientsocket.shutdown(socket.SHUT_RDWR)
     clientsocket.close()
     logging.info('client processed')
 
@@ -76,7 +76,6 @@ def start_server():
             process_client(clientsocket, storage)
         except Exception as e:
             logging.error('error!\n{}'.format(traceback.format_exc()))
-            clientsocket.shutdown(socket.SHUT_RDWR)
             clientsocket.close()
 
 
