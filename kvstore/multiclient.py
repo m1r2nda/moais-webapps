@@ -72,7 +72,6 @@ def test():
 def start_test():
     start_time = datetime.now()
     pool = multiprocessing.Pool(CLIENTS)
-    pool.apply(test)
     for i in xrange(CLIENTS):
         pool.apply_async(test)
     pool.close()
